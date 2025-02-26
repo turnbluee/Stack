@@ -30,15 +30,11 @@ typedef struct {
     int MaxElem;
 } Stack;
 
-typedef struct Node {
-    int key;
-    struct Node* next;
-} Node;
-
 void Construct(Stack*);
-int Copy(Node*);
 void Destruct(Stack*);
 void Extend(Stack*);
 void Print (const Stack*, void*);
+void Copy(Stack*, unsigned char*);
+void Paste(Stack*, const unsigned char*);
 
 #endif //INNERHEADER_H
