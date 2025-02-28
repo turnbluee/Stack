@@ -14,27 +14,30 @@ exit(error_code); \
 #include <locale.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "UserHeader.h"
 
 extern const char* ErrorNames[];
 
 enum ErrorCodes {
     StackIsEmpty = 1,
-    InvalidElementSize
+    InvalidElementSize,
+    StackAllocationError,
+    StackExtendingError,
+    LastElemAllocationError,
+
 };
 
-typedef struct {
+struct Stack {
     unsigned char* stack;
-    unsigned char* LastBytePtr;
     int ElemSize;
     int ElemCount;
     int MaxElem;
-} Stack;
+};
 
 void Construct(Stack*);
 void Destruct(Stack*);
 void Extend(Stack*);
-void Print (const Stack*, void*);
-void Copy(Stack*, unsigned char*);
-void Paste(Stack*, const unsigned char*);
+void Print (int, void*);
+void Copy(unsigned char*, const unsigned char*, int);
 
 #endif //INNERHEADER_H

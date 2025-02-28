@@ -4,6 +4,7 @@ project(Stack C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(Stack main.c
-        MainHeader.h
-        InnerHeader.h
-        InnerFunc.c)
+        UserHeader.h
+        FuncsHeader.h
+        FuncsRealization.c
+)

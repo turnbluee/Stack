@@ -1,11 +1,14 @@
 #include <string.h>
-#include "MainHeader.h"
-#include "InnerHeader.h"
+#include "UserHeader.h"
+#include "FuncsHeader.h"
 
 const char* ErrorNames[] = {
     "Zero element",
     "Stack is empty",
-    "Invalid element size"
+    "Invalid element size",
+    "Stack allocation error",
+    "Stack extending error",
+    "LastElem allocation error",
 };
 
 const char* get_filename(const char* path) {
@@ -14,15 +17,14 @@ const char* get_filename(const char* path) {
 }
 
 void Construct (Stack* stack) {
-    int size;
     printf("%s", "Stack element size:");
-    scanf("%i", &size);
-    stack->ElemSize = size;
+    scanf("%i", &stack->ElemSize);
     stack->MaxElem = INITIAL_ELEM_COUNT;
     stack->ElemCount = 0;
     stack->stack = malloc(stack->ElemSize * stack->MaxElem);
-    assert(stack->stack != NULL && "Stack allocation error");
-    stack->LastBytePtr = stack->stack;
+    if (stack->stack == NULL) {
+        ERROR_PROCESSING(StackAllocationError);
+    }
 }
 
 void Push (Stack* stack, const void* value) {
@@ -30,23 +32,16 @@ void Push (Stack* stack, const void* value) {
         Extend(stack);
     }
 
-    Paste(stack, value);
+    Copy(stack->stack + stack->ElemCount * stack->ElemSize, value, stack->ElemSize);
     ++stack->ElemCount;
-}
-
-void Paste(Stack* stack, const unsigned char* value) {
-    unsigned char* PastingElem = (unsigned char*)value;
-    for (int i = 0; i < stack->ElemSize; ++i) {
-        ++stack->LastBytePtr;
-        *stack->LastBytePtr = *PastingElem;
-        ++PastingElem;
-    }
 }
 
 void Extend (Stack* stack) {
     stack->MaxElem *= 2;
     stack->stack = (unsigned char*)realloc(stack->stack, stack->MaxElem * stack->ElemSize);
-    assert(stack->stack != NULL && "Stack extending error");
+    if (stack->stack == NULL) {
+        ERROR_PROCESSING(StackExtendingError);
+    }
 }
 
 void* Pop (Stack* stack) {
@@ -54,26 +49,26 @@ void* Pop (Stack* stack) {
         ERROR_PROCESSING(StackIsEmpty);
     }
 
-    unsigned char* CopyingElem = malloc(stack->ElemSize);
-    assert(CopyingElem != NULL && "LastElem allocation error");
+    void* CopyingElem = malloc(stack->ElemSize);
+    if(CopyingElem == NULL) {
+        ERROR_PROCESSING(LastElemAllocationError);
+    }
 
-    Copy(stack, CopyingElem);
+    Copy(CopyingElem, stack->stack + (stack->ElemCount - 1) * stack->ElemSize, stack->ElemSize);
     --stack->ElemCount;
-    assert(CopyingElem != NULL && "LastElem getting error");
 
-    Print(stack, CopyingElem);
+    Print(stack->ElemSize, CopyingElem);
     return CopyingElem;
 }
 
-void Copy(Stack* stack, unsigned char* CopyingElem) {
-    for(int i = stack->ElemSize - 1; i >= 0; --i) {
-        *(CopyingElem + i) = *stack->LastBytePtr;
-        --stack->LastBytePtr;
+void Copy(unsigned char* CopyTo, const unsigned char* CopyFrom, int ElemSize) {
+    for(int i = 0; i < ElemSize; i++) {
+        CopyTo[i] = CopyFrom[i];
     }
 }
 
-void Print (const Stack* stack, void* LastElem) {
-    switch (stack->ElemSize) {
+void Print (const int ElemSize, void* LastElem) {
+    switch (ElemSize) {
         case(sizeof(int)): {
             int *Elem = (int*)LastElem;
             printf("%i\n", *Elem);
@@ -102,4 +97,10 @@ void Destruct (Stack* stack) {
 
 int Size (const Stack* stack) {
     return stack->ElemCount;
+}
+
+void PrintStack (Stack* stack) {
+    for (int i = 1; i <= stack->ElemCount; i++) {
+        Print(stack->ElemSize, stack->stack + (stack->ElemCount - i) * stack->ElemSize);
+    }
 }
