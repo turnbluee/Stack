@@ -3,8 +3,8 @@ project(Stack C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(Stack main.c
-        UserHeader.h
-        FuncsHeader.h
-        FuncsRealization.c
+add_executable(Stack stackMain.c
+        stackUserHeader.h
+        stackFuncsHeader.h
+        stackFuncs.c
 )

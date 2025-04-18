@@ -1,5 +1,5 @@
-#ifndef MAINHEADER_H
-#define MAINHEADER_H
+#ifndef STACKUSERHEADER_H
+#define STACKUSERHEADER_H
 
 #include <stdio.h>
 #include <locale.h>
@@ -8,9 +8,9 @@
 typedef struct Stack Stack;
 
 void Push(Stack*, const void*);
-void* Pop(Stack*);
+void* Pop(Stack*, void*);
 int Size(const Stack*);
-void Construct(Stack*);
+void Construct(Stack*, int);
 void Destruct(Stack*);
 void PrintStack(Stack*);
-#endif //MAINHEADER_H
+#endif

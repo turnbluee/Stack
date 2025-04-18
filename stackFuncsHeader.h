@@ -1,5 +1,5 @@
-#ifndef INNERHEADER_H
-#define INNERHEADER_H
+#ifndef STACKFUNCSHEADER_H
+#define STACKFUNCSHEADER_H
 #define INITIAL_ELEM_COUNT 100
 
 #define ERROR_PROCESSING(error_code) \
@@ -14,7 +14,7 @@ exit(error_code); \
 #include <locale.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "UserHeader.h"
+#include "stackUserHeader.h"
 
 extern const char* ErrorNames[];
 
@@ -29,15 +29,13 @@ enum ErrorCodes {
 
 struct Stack {
     unsigned char* stack;
-    int ElemSize;
-    int ElemCount;
-    int MaxElem;
+    int elemSize;
+    int elemCount;
+    int maxElem;
 };
 
-void Construct(Stack*);
-void Destruct(Stack*);
 void Extend(Stack*);
 void Print (int, void*);
 void Copy(unsigned char*, const unsigned char*, int);
 
-#endif //INNERHEADER_H
+#endif
