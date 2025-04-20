@@ -32,7 +32,8 @@ enum ErrorCodes {
     MagicCorrupted,
     CanaryCorrupted,
     ReadingPoisonedSlot,
-    BitmaskHoleDetected
+    BitmaskHoleDetected,
+    BitmaskAllocationError
 };
 
 struct Stack {

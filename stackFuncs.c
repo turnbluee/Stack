@@ -13,7 +13,8 @@ const char* ErrorNames[] = {
     "Magic corrupted, possibly use-after-free",
     "Canary corrupted, possibly sigmentation fault",
     "Read a poisoned slot",
-    "Uninitialized slot between initialized ones"
+    "Uninitialized slot between initialized ones",
+    "Bitmask allocation error"
 };
 
 const char* get_filename(const char* path) {
@@ -37,6 +38,9 @@ void Construct (Stack* stack, int elemSize) {
 
     size_t mask_bytes = (stack->maxElem + 7) / 8;
     stack->bitmask = calloc(mask_bytes, sizeof *stack->bitmask);
+    if (stack->bitmask == NULL) {
+        ERROR_PROCESSING(BitmaskAllocationError);
+    }
 
     if (stack->stack == NULL) {
         ERROR_PROCESSING(StackAllocationError);
